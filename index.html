@@ -377,12 +377,17 @@
         let activeUser = null;
 
         // Default Credentials fallback
-        const DEFAULT_SUPA_URL = "https://xmxnppupmtofwjvgjara.supabase.com";
+                const DEFAULT_SUPA_URL = "https://xmxnppupmtofwjvgjara.supabase.co";
         const DEFAULT_SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhteG5wcHVwbXRvZndqdmdqYXJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MTY3NTYsImV4cCI6MjEwNzQ5Mjc1Nn0.P8UkCZ6-j11mqZIFYgzJGG3DAHE5-0qrV5mHT-5ySO8";
 
+        // Global variable to keep the user state in code RAM during the session
+        let activeUser = null;
+        let supabaseClient = null;
+
         function initSupabase() {
-            let supaUrl = localStorage.getItem('calc_supa_url') || DEFAULT_SUPA_URL;
-            let supaKey = localStorage.getItem('calc_supa_key') || DEFAULT_SUPA_KEY;
+            // Replaced localStorage completely with your fixed code variables
+            let supaUrl = DEFAULT_SUPA_URL;
+            let supaKey = DEFAULT_SUPA_KEY;
 
             if (window.supabase && supaUrl && supaKey) {
                 try {
@@ -449,8 +454,8 @@
             msg.innerText = "Creating account...";
             msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
 
-            // Attempt Supabase SignUp first if custom credentials are supplied
-            if (supabaseClient && localStorage.getItem('calc_supa_url')) {
+            // Always runs the real Supabase client authentication now
+            if (supabaseClient) {
                 const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: pass
@@ -465,12 +470,8 @@
                     if (data.user) updateSupaUserUI(data.user);
                 }
             } else {
-                // Local session store fallback so Sign Up always succeeds instantly
-                let userObj = { id: 'usr_' + Date.now(), email: email };
-                localStorage.setItem('calc_active_user', JSON.stringify(userObj));
-                msg.innerText = "Account created successfully!";
-                msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
-                updateSupaUserUI(userObj);
+                msg.innerText = "Database connection error.";
+                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
             }
         }
 
@@ -488,7 +489,8 @@
             msg.innerText = "Authenticating...";
             msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
 
-            if (supabaseClient && localStorage.getItem('calc_supa_url')) {
+            // Always signs into your main Supabase project directly
+            if (supabaseClient) {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: pass
@@ -503,11 +505,8 @@
                     updateSupaUserUI(data.user);
                 }
             } else {
-                let userObj = { id: 'usr_' + Date.now(), email: email };
-                localStorage.setItem('calc_active_user', JSON.stringify(userObj));
-                msg.innerText = "Signed in successfully!";
-                msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
-                updateSupaUserUI(userObj);
+                msg.innerText = "Database connection error.";
+                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
             }
         }
 
@@ -515,7 +514,6 @@
             if (supabaseClient) {
                 await supabaseClient.auth.signOut();
             }
-            localStorage.removeItem('calc_active_user');
             updateSupaUserUI(null);
         }
 
@@ -530,16 +528,15 @@
             }
 
             try {
-                if (supabaseClient && localStorage.getItem('calc_supa_url')) {
+                if (supabaseClient) {
                     await supabaseClient
                         .from('user_progress')
                         .upsert({ 
                             user_id: activeUser.id, 
-                            last_active_game: window.currentActiveGameUrl || "https://cyberwolfstudios.github.io/cookieclicker/",
+                            last_active_game: window.currentActiveGameUrl || "https://cyberwolfstudios.github.io/cookie/",
                             updated_at: new Date().toISOString()
                         });
                 }
-                localStorage.setItem('calc_saved_game_' + activeUser.id, window.currentActiveGameUrl);
                 if (msg) {
                     msg.innerText = "Progress saved successfully!";
                     msg.className = "text-xs font-mono text-emerald-400 text-center mt-2";
@@ -547,10 +544,11 @@
             } catch (err) {
                 if (msg) {
                     msg.innerText = "Progress synced to active session.";
-                    msg.className = "text-xs font-mono text-emerald-400 text-center mt-2";
+                    msg.className = "text-xs font-mono text-rose-400 text-center mt-2";
                 }
             }
         }
+
 
         function saveSupaConfig() {
             const url = document.getElementById('supaUrlConfig').value.trim();
