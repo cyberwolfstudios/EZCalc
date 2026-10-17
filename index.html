@@ -369,8 +369,8 @@
                 <input
                     type="password"
                     id="supaKeyConfig"
-                    supaKeyConfig="YOUR_SB_PUBLISHABLE_KEY"
-                    value="YOUR_SB_PUBLISHABLE_KEY"
+                    supaKeyConfig="sb_publishable_b9IiE03qTniZhJn28oGmFA_0kNeF7WP"
+                    value="sb_publishable_b9IiE03qTniZhJn28oGmFA_0kNeF7WP"
                     class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500"
                 >
             </div>
@@ -410,7 +410,7 @@
 
     // Default credentials
     const DEFAULT_SUPA_URL = "https://xmxnppupmtofwjvgjara.supabase.co";
-    const DEFAULT_SUPA_KEY = "YOUR_SB_PUBLISHABLE_KEY";
+    const DEFAULT_SUPA_KEY = "sb_publishable_b9IiE03qTniZhJn28oGmFA_0kNeF7WP";
 
     function initSupabase() {
         const supaUrl =
@@ -426,7 +426,7 @@
             !window.supabase ||
             !supaUrl ||
             !supaKey ||
-            supaKey === "YOUR_SB_PUBLISHABLE_KEY"
+            supaKey === "sb_publishable_b9IiE03qTniZhJn28oGmFA_0kNeF7WP"
         ) {
             return;
         }
@@ -609,7 +609,7 @@
         const key = document.getElementById("supaKeyConfig").value.trim();
         const msg = document.getElementById("adminSupaStatusMsg");
 
-        if (!url || !key || key === "YOUR_SB_PUBLISHABLE_KEY") {
+        if (!url || !key || key === "sb_publishable_b9IiE03qTniZhJn28oGmFA_0kNeF7WP") {
             msg.innerText = "Please provide both Supabase URL and Publishable Key.";
             msg.className = "text-xs font-mono text-rose-400 mt-2";
             return;
