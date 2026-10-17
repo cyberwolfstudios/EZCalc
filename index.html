@@ -331,411 +331,513 @@
                 </div>
 
                 <!-- Unlocked Admin Dashboard -->
-                <div id="adminUnlockedPanel" class="hidden flex-col gap-4 max-w-xl mx-auto w-full">
-                    <div class="bg-slate-900 border border-slate-800/90 rounded-2xl p-5 shadow-2xl space-y-4">
-                        <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                            <i class="fa-solid fa-circle-check"></i> Admin Access Granted
-                        </div>
-                        <p class="text-xs text-slate-400">Configure your Supabase Database Credentials below to connect live cloud authentication and sync functionality.</p>
-
-                        <div class="space-y-3">
-                          <div>
-    <label class="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">Supabase Project URL</label>
-    <!-- Kept your custom attribute AND added value="..." -->
-    <input type="text" id="supaUrlConfig" supaUrlConfig="https://xmxnppupmtofwjvgjara.supabase.co/" value="https://xmxnppupmtofwjvgjara.supabase.co/" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500">
-</div>
-<div>
-    <label class="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">Supabase Anon Key</label>
-    <!-- Kept your custom attribute AND added value="..." -->
-    <input type="password" id="supaKeyConfig" supaKeyConfig="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhteG5wcHVwbXRvZndqdmdqYXJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MTY3NTYsImV4cCI6MjEwNzQ5Mjc1Nn0.P8UkCZ6-j11mqZIFYgzJGG3DAHE5-0qrV5mHT-5ySO8" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhteG5wcHVwbXRvZndqdmdqYXJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MTY3NTYsImV4cCI6MjEwNzQ5Mjc1Nn0.P8UkCZ6-j11mqZIFYgzJGG3DAHE5-0qrV5mHT-5ySO8" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500">
-</div>
-
-<div class="flex gap-2 pt-1">
-    <button type="button" onclick="saveSupaConfig()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition cursor-pointer shadow-sm">
-        Save Credentials
-    </button>
-</div>
-
-                            <p id="adminSupaStatusMsg" class="text-xs font-mono text-slate-400 min-h-[16px]"></p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
+<div id="adminUnlockedPanel" class="hidden flex-col gap-4 max-w-xl mx-auto w-full">
+    <div class="bg-slate-900 border border-slate-800/90 rounded-2xl p-5 shadow-2xl space-y-4">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+            <i class="fa-solid fa-circle-check"></i>
+            Admin Access Granted
         </div>
 
-    </main>
+        <p class="text-xs text-slate-400">
+            Configure your Supabase Database Credentials below to connect live cloud authentication and sync functionality.
+        </p>
 
-    <!-- Edge Footer -->
-    <footer class="bg-slate-900/90 border-t border-slate-800/80 py-2 px-4 text-center text-[10px] text-slate-500 font-mono shrink-0">
-        <span>Scientific Workspace Engine • IEEE Standard Double-Precision Floating Point</span>
-    </footer>
+        <div class="space-y-3">
+            <div>
+                <label
+                    for="supaUrlConfig"
+                    class="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1"
+                >
+                    Supabase Project URL
+                </label>
+                <input
+                    type="text"
+                    id="supaUrlConfig"
+                    supaUrlConfig="https://xmxnppupmtofwjvgjara.supabase.co/"
+                    value="https://xmxnppupmtofwjvgjara.supabase.co/"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500"
+                >
+            </div>
 
-    <script>
-        // Supabase / Auth State
-        let supabaseClient = null;
-        let authService = null;
-        let activeUser = null;
+            <div>
+                <label
+                    for="supaKeyConfig"
+                    class="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1"
+                >
+                    Supabase Publishable Key
+                </label>
+                <input
+                    type="password"
+                    id="supaKeyConfig"
+                    supaKeyConfig="YOUR_SB_PUBLISHABLE_KEY"
+                    value="YOUR_SB_PUBLISHABLE_KEY"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500"
+                >
+            </div>
 
-        // Default Credentials fallback
-                const DEFAULT_SUPA_URL = "https://xmxnppupmtofwjvgjara.supabase.co";
-        const DEFAULT_SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhteG5wcHVwbXRvZndqdmdqYXJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MTY3NTYsImV4cCI6MjEwNzQ5Mjc1Nn0.P8UkCZ6-j11mqZIFYgzJGG3DAHE5-0qrV5mHT-5ySO8";
+            <div class="flex gap-2 pt-1">
+                <button
+                    type="button"
+                    onclick="saveSupaConfig()"
+                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition cursor-pointer shadow-sm"
+                >
+                    Save Credentials
+                </button>
+            </div>
 
-        // Global variable to keep the user state in code RAM during the session
-        let activeUser = null;
-        let supabaseClient = null;
+            <p
+                id="adminSupaStatusMsg"
+                class="text-xs font-mono text-slate-400 min-h-[16px]"
+            ></p>
+        </div>
+    </div>
+</div>
 
-        function initSupabase() {
-            // Replaced localStorage completely with your fixed code variables
-            let supaUrl = DEFAULT_SUPA_URL;
-            let supaKey = DEFAULT_SUPA_KEY;
+</div>
+</div>
+</main>
 
-            if (window.supabase && supaUrl && supaKey) {
-                try {
-                    supabaseClient = window.supabase.createClient(supaUrl, supaKey);
-                    checkSupaSession();
-                } catch (e) {
-                    console.log("Supabase initialization fallback enabled.");
-                }
-            }
+<!-- Edge Footer -->
+<footer class="bg-slate-900/90 border-t border-slate-800/80 py-2 px-4 text-center text-[10px] text-slate-500 font-mono shrink-0">
+    <span>Scientific Workspace Engine • IEEE Standard Double-Precision Floating Point</span>
+</footer>
+
+<script>
+    // Supabase / Auth State
+    let supabaseClient = null;
+    let authService = null;
+    let activeUser = null;
+
+    // Default credentials
+    const DEFAULT_SUPA_URL = "https://xmxnppupmtofwjvgjara.supabase.co";
+    const DEFAULT_SUPA_KEY = "YOUR_SB_PUBLISHABLE_KEY";
+
+    function initSupabase() {
+        const supaUrl =
+            localStorage.getItem("calc_supa_url") ||
+            DEFAULT_SUPA_URL;
+
+        const supaKey =
+            localStorage.getItem("calc_supa_key") ||
+            DEFAULT_SUPA_KEY;
+
+        // Avoid attempting to initialize with the example placeholder.
+        if (
+            !window.supabase ||
+            !supaUrl ||
+            !supaKey ||
+            supaKey === "YOUR_SB_PUBLISHABLE_KEY"
+        ) {
+            return;
         }
 
-        async function checkSupaSession() {
-            if (!supabaseClient) return;
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
+        try {
+            supabaseClient = window.supabase.createClient(supaUrl, supaKey);
+            checkSupaSession();
+        } catch (error) {
+            console.error("Supabase initialization failed:", error);
+        }
+    }
+
+    async function checkSupaSession() {
+        if (!supabaseClient) return;
+
+        try {
+            const {
+                data: { session }
+            } = await supabaseClient.auth.getSession();
+
+            updateSupaUserUI(session ? session.user : null);
+
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
                 updateSupaUserUI(session ? session.user : null);
+            });
+        } catch (error) {
+            console.error("Session fetch error:", error);
+        }
+    }
 
-                supabaseClient.auth.onAuthStateChange((_event, session) => {
-                    updateSupaUserUI(session ? session.user : null);
-                });
-            } catch (err) {
-                console.error("Session fetch error:", err);
-            }
+    function updateSupaUserUI(user) {
+        activeUser = user;
+
+        const badge = document.getElementById("headerAuthBadge");
+        const emailDisp = document.getElementById("headerUserEmail");
+        const loggedInView = document.getElementById("authLoggedInView");
+        const loggedOutView = document.getElementById("authLoggedOutView");
+        const userDisp = document.getElementById("supaLoggedInUserDisplay");
+
+        if (user) {
+            if (badge) badge.classList.remove("hidden");
+            if (emailDisp) emailDisp.innerText = user.email || "Cloud Account";
+            if (loggedInView) loggedInView.classList.remove("hidden");
+            if (loggedOutView) loggedOutView.classList.add("hidden");
+            if (userDisp) userDisp.innerText = `User: ${user.email}`;
+        } else {
+            if (badge) badge.classList.add("hidden");
+            if (loggedInView) loggedInView.classList.add("hidden");
+            if (loggedOutView) loggedOutView.classList.remove("hidden");
+        }
+    }
+
+    async function handleSupaSignUp() {
+        const email = document.getElementById("supaEmailInput").value.trim();
+        const pass = document.getElementById("supaPasswordInput").value.trim();
+        const msg = document.getElementById("supaAuthStatusMsg");
+
+        if (!email || !pass) {
+            msg.innerText = "Please enter both email and password.";
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
         }
 
-        function updateSupaUserUI(user) {
-            activeUser = user;
-            const badge = document.getElementById('headerAuthBadge');
-            const emailDisp = document.getElementById('headerUserEmail');
-            const loggedInView = document.getElementById('authLoggedInView');
-            const loggedOutView = document.getElementById('authLoggedOutView');
-            const userDisp = document.getElementById('supaLoggedInUserDisplay');
-
-            if (user) {
-                if (badge) badge.classList.remove('hidden');
-                if (emailDisp) emailDisp.innerText = user.email || 'Cloud Account';
-                if (loggedInView) loggedInView.classList.remove('hidden');
-                if (loggedOutView) loggedOutView.classList.add('hidden');
-                if (userDisp) userDisp.innerText = `User: ${user.email}`;
-            } else {
-                if (badge) badge.classList.add('hidden');
-                if (loggedInView) loggedInView.classList.add('hidden');
-                if (loggedOutView) loggedOutView.classList.remove('hidden');
-            }
+        if (pass.length < 6) {
+            msg.innerText = "Password must be at least 6 characters.";
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
         }
 
-        async function handleSupaSignUp() {
-            const email = document.getElementById('supaEmailInput').value.trim();
-            const pass = document.getElementById('supaPasswordInput').value.trim();
-            const msg = document.getElementById('supaAuthStatusMsg');
+        msg.innerText = "Creating account...";
+        msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
 
-            if (!email || !pass) {
-                msg.innerText = "Please enter both email and password.";
-                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-                return;
-            }
-
-            if (pass.length < 6) {
-                msg.innerText = "Password must be at least 6 characters.";
-                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-                return;
-            }
-
-            msg.innerText = "Creating account...";
-            msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
-
-            // Always runs the real Supabase client authentication now
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: pass
-                });
-
-                if (error) {
-                    msg.innerText = error.message;
-                    msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-                } else {
-                    msg.innerText = "Account created! You are now signed in.";
-                    msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
-                    if (data.user) updateSupaUserUI(data.user);
-                }
-            } else {
-                msg.innerText = "Database connection error.";
-                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-            }
+        if (!supabaseClient) {
+            msg.innerText = "Database connection error.";
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
         }
 
-        async function handleSupaSignIn() {
-            const email = document.getElementById('supaEmailInput').value.trim();
-            const pass = document.getElementById('supaPasswordInput').value.trim();
-            const msg = document.getElementById('supaAuthStatusMsg');
-
-            if (!email || !pass) {
-                msg.innerText = "Please enter both email and password.";
-                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-                return;
-            }
-
-            msg.innerText = "Authenticating...";
-            msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
-
-            // Always signs into your main Supabase project directly
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: pass
-                });
-
-                if (error) {
-                    msg.innerText = error.message;
-                    msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-                } else {
-                    msg.innerText = "Signed in successfully!";
-                    msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
-                    updateSupaUserUI(data.user);
-                }
-            } else {
-                msg.innerText = "Database connection error.";
-                msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
-            }
-        }
-
-        async function handleSupaSignOut() {
-            if (supabaseClient) {
-                await supabaseClient.auth.signOut();
-            }
-            updateSupaUserUI(null);
-        }
-
-        async function saveGameProgressSupabase() {
-            const msg = document.getElementById('supaAuthStatusMsg') || document.getElementById('adminSupaStatusMsg');
-            if (!activeUser) {
-                if (msg) {
-                    msg.innerText = "Please sign up or sign in first to save progress.";
-                    msg.className = "text-xs font-mono text-amber-400 text-center mt-2";
-                }
-                return;
-            }
-
-            try {
-                if (supabaseClient) {
-                    await supabaseClient
-                        .from('user_progress')
-                        .upsert({ 
-                            user_id: activeUser.id, 
-                            last_active_game: window.currentActiveGameUrl || "https://cyberwolfstudios.github.io/cookie/",
-                            updated_at: new Date().toISOString()
-                        });
-                }
-                if (msg) {
-                    msg.innerText = "Progress saved successfully!";
-                    msg.className = "text-xs font-mono text-emerald-400 text-center mt-2";
-                }
-            } catch (err) {
-                if (msg) {
-                    msg.innerText = "Progress synced to active session.";
-                    msg.className = "text-xs font-mono text-rose-400 text-center mt-2";
-                }
-            }
-        }
-
-
-        function saveSupaConfig() {
-            const url = document.getElementById('supaUrlConfig').value.trim();
-            const key = document.getElementById('supaKeyConfig').value.trim();
-            const msg = document.getElementById('adminSupaStatusMsg');
-
-            if (!url || !key) {
-                msg.innerText = "Please provide both Supabase URL and Anon Key.";
-                msg.className = "text-xs font-mono text-rose-400 mt-2";
-                return;
-            }
-
-            localStorage.setItem('calc_supa_url', url);
-            localStorage.setItem('calc_supa_key', key);
-            
-            initSupabase();
-
-            msg.innerText = "Supabase credentials updated successfully!";
-            msg.className = "text-xs font-mono text-emerald-400 mt-2";
-        }
-
-        function clearSupaConfig() {
-            localStorage.removeItem('calc_supa_url');
-            localStorage.removeItem('calc_supa_key');
-            document.getElementById('supaUrlConfig').value = "";
-            document.getElementById('supaKeyConfig').value = "";
-            const msg = document.getElementById('adminSupaStatusMsg');
-            msg.innerText = "Credentials cleared.";
-            msg.className = "text-xs font-mono text-slate-400 mt-2";
-        }
-    </script>
-
-    <script>
-        // --- CALCULATOR ENGINE LOGIC ---
-        let calcCurrentExpr = "";
-        let clearClickCount = 0;
-        let clearClickTimer = null;
-        window.currentActiveGameUrl = "https://cyberwolfstudios.github.io/cookie/";
-
-        function calcInput(val) {
-            const display = document.getElementById('calcMainDisplay');
-            if (display.innerText === "0" && val !== "." && !['+', '-', '*', '/', '%', '^'].includes(val)) {
-                calcCurrentExpr = val;
-            } else {
-                calcCurrentExpr += val;
-            }
-            updateCalcDisplay();
-        }
-
-        function calcBackspace() {
-            calcCurrentExpr = calcCurrentExpr.slice(0, -1);
-            if (calcCurrentExpr === "") calcCurrentExpr = "0";
-            updateCalcDisplay();
-        }
-
-        function handleClearClick() {
-            calcCurrentExpr = "";
-            document.getElementById('calcMainDisplay').innerText = "0";
-            document.getElementById('calcExprDisplay').innerText = "";
-
-            // Rapid 5x AC trigger mechanism
-            clearClickCount++;
-            clearTimeout(clearClickTimer);
-
-            if (clearClickCount >= 5) {
-                clearClickCount = 0;
-                toggleSecretPortal(true);
-            } else {
-                clearClickTimer = setTimeout(() => {
-                    clearClickCount = 0;
-                }, 2500);
-            }
-        }
-
-        function updateCalcDisplay() {
-            const mainDisp = document.getElementById('calcMainDisplay');
-            const exprDisp = document.getElementById('calcExprDisplay');
-            mainDisp.innerText = calcCurrentExpr || "0";
-            exprDisp.innerText = calcCurrentExpr;
-        }
-
-        function calcEvaluate() {
-            try {
-                if (!calcCurrentExpr) return;
-                let expr = calcCurrentExpr.replace(/×/g, '*').replace(/÷/g, '/');
-                let result = math.evaluate(expr);
-                if (typeof result === 'number') {
-                    result = parseFloat(result.toFixed(8));
-                }
-                document.getElementById('calcHistoryMini').innerText = calcCurrentExpr + " = " + result;
-                document.getElementById('calcMainDisplay').innerText = result;
-                calcCurrentExpr = String(result);
-            } catch (err) {
-                document.getElementById('calcMainDisplay').innerText = "Error";
-                calcCurrentExpr = "";
-            }
-        }
-
-        // Keyboard inputs for calculation
-        window.addEventListener('keydown', (e) => {
-            const calcView = document.getElementById('calculatorView');
-            if (calcView.classList.contains('hidden')) return;
-
-            if (e.key >= '0' && e.key <= '9') calcInput(e.key);
-            else if (e.key === '.') calcInput('.');
-            else if (e.key === '+') calcInput('+');
-            else if (e.key === '-') calcInput('-');
-            else if (e.key === '*') calcInput('*');
-            else if (e.key === '/') { e.preventDefault(); calcInput('/'); }
-            else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calcEvaluate(); }
-            else if (e.key === 'Backspace') calcBackspace();
-            else if (e.key === 'Escape') handleClearClick();
+        const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password: pass
         });
 
-        // --- SECRET PORTAL ENGINE LOGIC ---
-        let isAdminUnlocked = false;
+        if (error) {
+            msg.innerText = error.message;
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
+        }
 
-        function toggleSecretPortal(forceOpen = false) {
-            const calcView = document.getElementById('calculatorView');
-            const portalView = document.getElementById('portalView');
+        msg.innerText = "Account created! You are now signed in.";
+        msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
 
-            if (portalView.classList.contains('hidden') || forceOpen) {
-                calcView.classList.add('hidden');
-                portalView.classList.remove('hidden');
-                portalView.classList.add('flex');
-            } else {
-                portalView.classList.add('hidden');
-                portalView.classList.remove('flex');
-                calcView.classList.remove('hidden');
+        if (data.user) updateSupaUserUI(data.user);
+    }
+
+    async function handleSupaSignIn() {
+        const email = document.getElementById("supaEmailInput").value.trim();
+        const pass = document.getElementById("supaPasswordInput").value.trim();
+        const msg = document.getElementById("supaAuthStatusMsg");
+
+        if (!email || !pass) {
+            msg.innerText = "Please enter both email and password.";
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
+        }
+
+        msg.innerText = "Authenticating...";
+        msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
+
+        if (!supabaseClient) {
+            msg.innerText = "Database connection error.";
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
+        }
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password: pass
+        });
+
+        if (error) {
+            msg.innerText = error.message;
+            msg.className = "text-xs font-mono text-rose-400 text-center min-h-[16px] mt-2";
+            return;
+        }
+
+        msg.innerText = "Signed in successfully!";
+        msg.className = "text-xs font-mono text-emerald-400 text-center min-h-[16px] mt-2";
+        updateSupaUserUI(data.user);
+    }
+
+    async function handleSupaSignOut() {
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
+
+        updateSupaUserUI(null);
+    }
+
+    async function saveGameProgressSupabase() {
+        const msg =
+            document.getElementById("supaAuthStatusMsg") ||
+            document.getElementById("adminSupaStatusMsg");
+
+        if (!activeUser) {
+            if (msg) {
+                msg.innerText = "Please sign up or sign in first to save progress.";
+                msg.className = "text-xs font-mono text-amber-400 text-center mt-2";
+            }
+            return;
+        }
+
+        try {
+            if (supabaseClient) {
+                await supabaseClient
+                    .from("user_progress")
+                    .upsert({
+                        user_id: activeUser.id,
+                        last_active_game:
+                            window.currentActiveGameUrl ||
+                            "https://cyberwolfstudios.github.io/cookie/",
+                        updated_at: new Date().toISOString()
+                    });
+            }
+
+            if (msg) {
+                msg.innerText = "Progress saved successfully!";
+                msg.className = "text-xs font-mono text-emerald-400 text-center mt-2";
+            }
+        } catch (error) {
+            if (msg) {
+                msg.innerText = "Progress synced to active session.";
+                msg.className = "text-xs font-mono text-rose-400 text-center mt-2";
             }
         }
+    }
 
-        function switchPortalTab(tab) {
-            const arcadeSec = document.getElementById('arcadeSection');
-            const authSec = document.getElementById('authSection');
-            const adminSec = document.getElementById('adminSection');
+    function saveSupaConfig() {
+        const url = document.getElementById("supaUrlConfig").value.trim();
+        const key = document.getElementById("supaKeyConfig").value.trim();
+        const msg = document.getElementById("adminSupaStatusMsg");
 
-            const arcadeBtn = document.getElementById('tabArcadeBtn');
-            const authBtn = document.getElementById('tabAuthBtn');
-            const adminBtn = document.getElementById('tabAdminBtn');
+        if (!url || !key || key === "YOUR_SB_PUBLISHABLE_KEY") {
+            msg.innerText = "Please provide both Supabase URL and Publishable Key.";
+            msg.className = "text-xs font-mono text-rose-400 mt-2";
+            return;
+        }
 
-            // Hide all sections first
-            arcadeSec.classList.add('hidden'); arcadeSec.classList.remove('flex');
-            authSec.classList.add('hidden'); authSec.classList.remove('flex');
-            adminSec.classList.add('hidden'); adminSec.classList.remove('flex');
+        localStorage.setItem("calc_supa_url", url);
+        localStorage.setItem("calc_supa_key", key);
 
-            // Default button classes
-            const defaultBtnClass = "px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition border border-slate-700 flex items-center gap-2 cursor-pointer";
-            const activeBtnClass = "px-3.5 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg transition border border-blue-500 flex items-center gap-2 cursor-pointer shadow-sm";
+        initSupabase();
 
-            arcadeBtn.className = defaultBtnClass;
-            authBtn.className = defaultBtnClass;
-            adminBtn.className = defaultBtnClass;
+        msg.innerText = "Supabase credentials updated successfully!";
+        msg.className = "text-xs font-mono text-emerald-400 mt-2";
+    }
 
-            if (tab === 'arcade') {
-                arcadeSec.classList.remove('hidden'); arcadeSec.classList.add('flex');
-                arcadeBtn.className = activeBtnClass;
-            } else if (tab === 'auth') {
-                authSec.classList.remove('hidden'); authSec.classList.add('flex');
-                authBtn.className = activeBtnClass;
-            } else if (tab === 'admin') {
-                adminSec.classList.remove('hidden'); adminSec.classList.add('flex');
-                adminBtn.className = activeBtnClass;
+    function clearSupaConfig() {
+        localStorage.removeItem("calc_supa_url");
+        localStorage.removeItem("calc_supa_key");
+
+        document.getElementById("supaUrlConfig").value = "";
+        document.getElementById("supaKeyConfig").value = "";
+
+        const msg = document.getElementById("adminSupaStatusMsg");
+        msg.innerText = "Credentials cleared.";
+        msg.className = "text-xs font-mono text-slate-400 mt-2";
+    }
+</script>
+
+<script>
+    // --- CALCULATOR ENGINE LOGIC ---
+    let calcCurrentExpr = "";
+    let clearClickCount = 0;
+    let clearClickTimer = null;
+
+    window.currentActiveGameUrl =
+        "https://cyberwolfstudios.github.io/cookie/";
+
+    function calcInput(val) {
+        const display = document.getElementById("calcMainDisplay");
+
+        if (
+            display.innerText === "0" &&
+            val !== "." &&
+            !["+", "-", "*", "/", "%", "^"].includes(val)
+        ) {
+            calcCurrentExpr = val;
+        } else {
+            calcCurrentExpr += val;
+        }
+
+        updateCalcDisplay();
+    }
+
+    function calcBackspace() {
+        calcCurrentExpr = calcCurrentExpr.slice(0, -1);
+
+        if (calcCurrentExpr === "") {
+            calcCurrentExpr = "0";
+        }
+
+        updateCalcDisplay();
+    }
+
+    function handleClearClick() {
+        calcCurrentExpr = "";
+        document.getElementById("calcMainDisplay").innerText = "0";
+        document.getElementById("calcExprDisplay").innerText = "";
+
+        clearClickCount++;
+        clearTimeout(clearClickTimer);
+
+        if (clearClickCount >= 5) {
+            clearClickCount = 0;
+            toggleSecretPortal(true);
+        } else {
+            clearClickTimer = setTimeout(() => {
+                clearClickCount = 0;
+            }, 2500);
+        }
+    }
+
+    function updateCalcDisplay() {
+        const mainDisp = document.getElementById("calcMainDisplay");
+        const exprDisp = document.getElementById("calcExprDisplay");
+
+        mainDisp.innerText = calcCurrentExpr || "0";
+        exprDisp.innerText = calcCurrentExpr;
+    }
+
+    function calcEvaluate() {
+        try {
+            if (!calcCurrentExpr) return;
+
+            let expr = calcCurrentExpr
+                .replace(/×/g, "*")
+                .replace(/÷/g, "/");
+
+            let result = math.evaluate(expr);
+
+            if (typeof result === "number") {
+                result = parseFloat(result.toFixed(8));
             }
+
+            document.getElementById("calcHistoryMini").innerText =
+                calcCurrentExpr + " = " + result;
+
+            document.getElementById("calcMainDisplay").innerText = result;
+            calcCurrentExpr = String(result);
+        } catch (error) {
+            document.getElementById("calcMainDisplay").innerText = "Error";
+            calcCurrentExpr = "";
+        }
+    }
+
+    window.addEventListener("keydown", (event) => {
+        const calcView = document.getElementById("calculatorView");
+
+        if (!calcView || calcView.classList.contains("hidden")) return;
+
+        if (event.key >= "0" && event.key <= "9") {
+            calcInput(event.key);
+        } else if (event.key === ".") {
+            calcInput(".");
+        } else if (event.key === "+") {
+            calcInput("+");
+        } else if (event.key === "-") {
+            calcInput("-");
+        } else if (event.key === "*") {
+            calcInput("*");
+        } else if (event.key === "/") {
+            event.preventDefault();
+            calcInput("/");
+        } else if (event.key === "Enter" || event.key === "=") {
+            event.preventDefault();
+            calcEvaluate();
+        } else if (event.key === "Backspace") {
+            calcBackspace();
+        } else if (event.key === "Escape") {
+            handleClearClick();
+        }
+    });
+
+    // --- SECRET PORTAL ENGINE LOGIC ---
+    let isAdminUnlocked = false;
+
+    function toggleSecretPortal(forceOpen = false) {
+        const calcView = document.getElementById("calculatorView");
+        const portalView = document.getElementById("portalView");
+
+        if (!calcView || !portalView) return;
+
+        if (portalView.classList.contains("hidden") || forceOpen) {
+            calcView.classList.add("hidden");
+            portalView.classList.remove("hidden");
+            portalView.classList.add("flex");
+        } else {
+            portalView.classList.add("hidden");
+            portalView.classList.remove("flex");
+            calcView.classList.remove("hidden");
+        }
+    }
+
+    function switchPortalTab(tab) {
+        const arcadeSec = document.getElementById("arcadeSection");
+        const authSec = document.getElementById("authSection");
+        const adminSec = document.getElementById("adminSection");
+
+        const arcadeBtn = document.getElementById("tabArcadeBtn");
+        const authBtn = document.getElementById("tabAuthBtn");
+        const adminBtn = document.getElementById("tabAdminBtn");
+
+        if (!arcadeSec || !authSec || !adminSec || !arcadeBtn || !authBtn || !adminBtn) {
+            return;
         }
 
-        function loadGame(url, titleHTML) {
-            window.currentActiveGameUrl = url;
-            document.getElementById('activeGameTitle').innerHTML = titleHTML;
-            const container = document.getElementById('gameFrameContainer');
-            container.innerHTML = `<iframe id="arcadeFrame" src="${url}" class="w-full h-full border-0" allow="fullscreen; autoplay; gamepad"></iframe>`;
-        }
+        arcadeSec.classList.add("hidden");
+        arcadeSec.classList.remove("flex");
+        authSec.classList.add("hidden");
+        authSec.classList.remove("flex");
+        adminSec.classList.add("hidden");
+        adminSec.classList.remove("flex");
 
-        function reloadArcadeFrame() {
-            const frame = document.getElementById('arcadeFrame');
-            if (frame) {
-                frame.src = frame.src;
-            }
-        }
+        const defaultBtnClass =
+            "px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition border border-slate-700 flex items-center gap-2 cursor-pointer";
+        const activeBtnClass =
+            "px-3.5 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg transition border border-blue-500 flex items-center gap-2 cursor-pointer shadow-sm";
 
-        function popoutCurrentGame() {
-            if (window.currentActiveGameUrl) {
-                window.open(window.currentActiveGameUrl, '_blank');
-            }
+        arcadeBtn.className = defaultBtnClass;
+        authBtn.className = defaultBtnClass;
+        adminBtn.className = defaultBtnClass;
+
+        if (tab === "arcade") {
+            arcadeSec.classList.remove("hidden");
+            arcadeSec.classList.add("flex");
+            arcadeBtn.className = activeBtnClass;
+        } else if (tab === "auth") {
+            authSec.classList.remove("hidden");
+            authSec.classList.add("flex");
+            authBtn.className = activeBtnClass;
+        } else if (tab === "admin") {
+            adminSec.classList.remove("hidden");
+            adminSec.classList.add("flex");
+            adminBtn.className = activeBtnClass;
         }
+    }
+
+    function loadGame(url, titleHTML) {
+        window.currentActiveGameUrl = url;
+        document.getElementById("activeGameTitle").innerHTML = titleHTML;
+
+        const container = document.getElementById("gameFrameContainer");
+        container.innerHTML =
+            `<iframe id="arcadeFrame" src="${url}" class="w-full h-full border-0" allow="fullscreen; autoplay; gamepad"></iframe>`;
+    }
+
+    function reloadArcadeFrame() {
+        const frame = document.getElementById("arcadeFrame");
+
+        if (frame) {
+            frame.src = frame.src;
+        }
+    }
+
+    function popoutCurrentGame() {
+        if (window.currentActiveGameUrl) {
+            window.open(window.currentActiveGameUrl, "_blank");
+        }
+    }
+</script>
 
         // --- ADMIN KEYCODE VERIFICATION LOGIC ---
         function unlockAdminAccess() {
