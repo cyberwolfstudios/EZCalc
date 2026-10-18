@@ -1,5 +1,5 @@
 // Configuration targeted for same-origin GitHub pages execution
-const GAME_REPOSITORY_URL = "https://github.io";
+const GAME_REPOSITORY_URL = "https://cyberwolfstudios.github.io/cookie/";
 const EMBED_CONTAINER_ID = "cookieClickerContainer";
 
 function injectSameOriginIframe() {
